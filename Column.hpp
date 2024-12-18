@@ -1,5 +1,6 @@
 #include <string>
 #include <map>
+#include <vector>
 using namespace std;
 
 enum Datatype {
@@ -24,8 +25,36 @@ class Column {
             this->max_varchar_size = max_varchar_size;
         }
 
+        vector<int> searchColumn(string val) const{
+            vector<int> rowids{};
+            switch(dt) {
+                case BOOL:
+                    bool b = val == "true";
+                    for(auto const& [key, mval] : boolMap ) {
+                        if (mval == b) rowids.push_back(key);
+                    } 
+                    break;
+                case INT:
+                    int i = stoi(val);
+                    for(auto const& [key, mval] : intMap ) {
+                        if (mval == i) rowids.push_back(key);
+                    } 
+                    break;
+                case VARCHAR:
+                    for(auto const& [key, mval] : varcharMap ) {
+                        if (mval == val) rowids.push_back(key);
+                    }
+                    break;
+            }
+            return rowids;
+        }
+
         string getName() {
             return field_name;
+        }
+
+        Datatype getDatatype() {
+            return dt;
         }
 
         string getField(int row_id) {
